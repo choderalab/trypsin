@@ -1,0 +1,18 @@
+{ 
+ s_m_m2io_version
+ :::
+ 2.0.0 
+} 
+
+f_m_mmproj_lock_file { 
+ s_m_username
+ i_m_uid
+ i_m_pid
+ s_m_hostname
+ :::
+ rustenba 
+  0
+  10616
+  LMIS8010 
+} 
+
