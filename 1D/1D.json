@@ -1,0 +1,31 @@
+{
+  "_comment": "This is to setup the 1D ligand (PDB residue name FD3) by running through epik, parametrizing the states, and then creating a unified template.\nSeveral output filenames will be completed using formatting strings such as {basename}, {pH}, so make sure that those variables are defined in the parameters section of this file. It will also create a solvent system that can be used to calibrate the ligand. Ion concentrations should be specified later using saltswap, so this does not include any ions.",
+  "input": {
+    "_comment" : "Setup requires one maestro file as input for epik, and a pdb file as source for the calibration structure.",
+    "dir": "./",
+    "epik": "{basename}-input.mae",
+    "calibration": "{basename}-source.pdb"
+  },
+  "output": {
+    "dir": "{basename}-output",
+    "calibration_system": "{basename}-{pH}-{max_penalty}kT-calibration-system.cif",
+    "epik": "{basename}-{pH}-{max_penalty}kT-epik.mae",
+    "ffxml": "{basename}-{pH}-{max_penalty}kT.ffxml",
+    "hxml": "{basename}-{pH}-{max_penalty}kT-H.xml",
+
+    "debug": {
+      "_comment": "These output files are created in between, but may provide useful debugging information.",
+      "fixed_hydrogens": "{basename}-{pH}-{max_penalty}kT-epik-fixed.mol2",
+      "extracted_residue": "{basename}-extracted.pdb",
+      "keep_files": true
+    }
+  },
+  "parameters": {
+    "_comment": "Any settings for the methods, or formatting fields for filenames should be entered here.",
+    "pH": 7.8,
+    "tautomerize": false,
+    "max_penalty": 10,
+    "basename": "1D",
+    "pdb_resname": "FD3"
+  }
+}
