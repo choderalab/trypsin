@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #BSUB -J Imatinib-solvent-1-GBAOAB
 #BSUB -n 1
 #BSUB -R rusage[mem=8]
@@ -18,11 +18,11 @@ cd $LS_SUBCWD
 export PATH="/home/rustenburg/miniconda3/bin:$PATH"
 
 # Use the right conda environment
-source activate protons-production
+source activate trypsin
 
 # Launch my program.
 module load cuda
 python run_simulation-1.py
 
 # Submit the next job into the queue
-bsub < submit_simulation-2.sh
+# bsub < submit_simulation-2.sh
