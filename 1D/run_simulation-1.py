@@ -98,9 +98,9 @@ def main(jsonfile):
     signal.signal(signal.SIGALRM, timeout_handler)
     # Input files
     inp = settings["input"]
-
-    input_pdbx_file = inp["calibration_system"].format(**prms)
-    ligand_xml = inp["ffxml"].format(**prms)
+    idir = inp["dir"].format(**prms)
+    input_pdbx_file = os.path.join(idir, inp["calibration_system"].format(**prms))
+    ligand_xml = os.path.join(idir, inp["ffxml"].format(**prms))
 
     # Load the PDBxfile and the forcefield files
     pdb_object = app.PDBxFile(input_pdb_file)
@@ -117,6 +117,12 @@ def main(jsonfile):
 
     # Naming the output files
     out = settings["output"]
+    odir = out["dir"].format(**prms)
+
+    if not os.path.isdir(odir):
+        os.makedirs(odir)
+    lastdir = os.getcwd()
+    os.chdir(odir)
 
     name_netcdf = out["netcdf"].format(**prms)
     dcd_output_name = out["dcd"].format(**prms)
@@ -271,6 +277,7 @@ def main(jsonfile):
         serialize_sams_status(simulation, output_calibration_json)
 
         ncfile.close()
+        os.chdir(lastdir)
 
     # End of script
 
