@@ -101,9 +101,10 @@ def main(jsonfile):
     idir = inp["dir"].format(**prms)
     input_pdbx_file = os.path.join(idir, inp["calibration_system"].format(**prms))
     ligand_xml = os.path.join(idir, inp["ffxml"].format(**prms))
+    ligand_xml = os.path.abspath(ligand_xml)
 
     # Load the PDBxfile and the forcefield files
-    pdb_object = app.PDBxFile(input_pdb_file)
+    pdb_object = app.PDBxFile(input_pdbx_file)
     forcefield = app.ForceField('amber10-constph.xml', 'gaff.xml', ligand_xml, 'tip3p.xml', 'ions_tip3p.xml')
 
     # Prepare the Simulation
@@ -156,11 +157,11 @@ def main(jsonfile):
     # settings form minimization
     minimization = prms["minimization"]
     pre_run_minimization_tolerance = float(minimization["tolerance_kjmol"]) * unit.kilojoule / unit.mole
-    minimization_max_iterations = int(minimization[max_iterations])
+    minimization_max_iterations = int(minimization["max_iterations"])
 
     # SAMS settings
     sams = prms["SAMS"]
-    beta_burnin = sams["beta"]
+    beta_burnin = sams["beta_sams"]
     flatness_criterion = sams["flatness_criterion"]
 
     # Script specific settings
@@ -221,7 +222,7 @@ def main(jsonfile):
     pools = {'ligand' : [ligand_titration_group_index]}
     driver.define_pools(pools)
     # Create SAMS sampler
-    simulation = app.ConstantPHCalibration(topology, system, compound_integrator, driver, group_index=ligand_titration_group_index, platform=platform, platformProperties=properties)
+    simulation = app.ConstantPHCalibration(topology, system, compound_integrator, driver, group_index=ligand_titration_group_index, platform=platform, platformProperties=properties, samsProperties=sams)
     simulation.context.setPositions(positions)
     salinator = Salinator(context=simulation.context,
                             system=system,
@@ -233,12 +234,12 @@ def main(jsonfile):
     salinator.neutralize()
     salinator.initialize_concentration()
     swapper = salinator.swapper
-    simulation.driver.attach_swapper(swapper)
+    simulation.drive.attach_swapper(swapper)
 
     simulation.minimizeEnergy(tolerance=pre_run_minimization_tolerance, maxIterations=minimization_max_iterations)
     simulation.step(num_thermalization_steps)
 
-    dcdreporter = app.DCDReporter(dcd_output_name, int(steps_between_updates/0))
+    dcdreporter = app.DCDReporter(dcd_output_name, int(steps_between_updates/10))
     ncfile = netCDF4.Dataset(name_netcdf, "w")
     metdatarep = MetadataReporter(ncfile, shared=True)
     ncmcrep = NCMCReporter(ncfile,1,shared=True)

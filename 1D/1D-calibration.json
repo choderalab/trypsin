@@ -20,7 +20,7 @@
   "parameters" : {
     "basename" : "1D",
     "pH" : 7.8,
-    "max_penalty": 10.0,
+    "max_penalty": 10,
     "total_attempts" : 5000,
     "num_thermalization_steps" : 10000,
     "steps_between_updates" : 10000,
@@ -48,7 +48,7 @@
       "max_iterations" : 0
     },
     "SAMS" : {
-      "beta" : 0.5,
+      "beta_sams" : 0.5,
       "flatness_criterion" : 0.15
     }
 
