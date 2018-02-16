@@ -22,7 +22,7 @@ source activate trypsin
 
 # Launch my program.
 module load cuda
-python run_simulation-1.py
+python run_calibration.py 1D-calibration.json
 
 # Submit the next job into the queue
 # bsub < submit_simulation-2.sh
