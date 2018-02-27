@@ -1,6 +1,6 @@
 {
   "input" : {
-   "_comment" : "Simulation requires an mmCIF file and a ffxml residue.",
+   "_comment" : "Simulation requires an mmCIF file and a ffxml residue. Please specify the input directory under dir.",
     "dir": "{basename}-output",
     "calibration_system": "{basename}-{pH}-{max_penalty}kT-calibration-system.cif",
     "ffxml": "{basename}-{pH}-{max_penalty}kT.ffxml"
@@ -18,6 +18,7 @@
   },
 
   "parameters" : {
+
     "basename" : "1D",
     "pH" : 7.8,
     "max_penalty": 10,
@@ -40,8 +41,10 @@
       "collision_rate_per_ps": 1.0
     },
     "ncmc" : {
+      "_comment": "Pick counterion_method from chen-roux, or background",
       "steps_per_trial" : 10000,
-      "propagations_per_step": 1
+      "propagations_per_step": 1,
+      "counterion_method": "chen-roux"
     },
     "minimization" : {
       "tolerance_kjmol":   1e-5,

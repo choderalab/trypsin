@@ -100,18 +100,27 @@ def main(jsonfile):
     inp = settings["input"]
     idir = inp["dir"].format(**prms)
     input_pdbx_file = os.path.join(idir, inp["calibration_system"].format(**prms))
-    ligand_xml = os.path.join(idir, inp["ffxml"].format(**prms))
-    ligand_xml = os.path.abspath(ligand_xml)
+    custom_xml_provided = False
+    if "ffxml" in inp:
+        custom_xml_provided = True
+
+    if custom_xml_provided
+        custom_xml = os.path.join(idir, inp["ffxml"].format(**prms))
+        custom_xml = os.path.abspath(custom_xml)
+        forcefield = app.ForceField('amber10-constph.xml', 'gaff.xml', custom_xml, 'tip3p.xml', 'ions_tip3p.xml')
+    else:
+        forcefield = app.ForceField('amber10-constph.xml', 'gaff.xml', 'tip3p.xml', 'ions_tip3p.xml')
 
     # Load the PDBxfile and the forcefield files
     pdb_object = app.PDBxFile(input_pdbx_file)
-    forcefield = app.ForceField('amber10-constph.xml', 'gaff.xml', ligand_xml, 'tip3p.xml', 'ions_tip3p.xml')
 
     # Prepare the Simulation
     topology = pdb_object.topology
     positions = pdb_object.positions
 
     # Quick fix for histidines in topology
+    # Openmm relabels them HIS, which leads to them not being detected as
+    # titratable. Renaming them fixes this.
     for residue in topology.residues():
         if residue.name == 'HIS':
             residue.name = 'HIP'
@@ -148,6 +157,9 @@ def main(jsonfile):
     steps_between_updates = int(prms["steps_between_updates"])
 
     ncmc = prms["ncmc"]
+    counterion_method = ncmc["counterion_method"].lower()
+    if counterion_method not in ["chen-roux", "chenroux", "background"]:
+        raise ValueError("Invalid ncmc counterion method, {}. Please pick Chen-Roux or background.".format(counterion_method))
     ncmc_steps_per_trial = int(ncmc["steps_per_trial"])
     prop_steps_per_trial = int(ncmc["propagations_per_step"])
     total_iterations = int(prms["total_attempts"])
@@ -210,7 +222,11 @@ def main(jsonfile):
     compound_integrator.addIntegrator(ncmc_propagation_integrator)
     compound_integrator.setCurrentIntegrator(0)
 
-    driver = ForceFieldProtonDrive(temperature, topology, system, forcefield, ['amber10-constph.xml', ligand_xml], pressure=pressure,
+    if custom_xml_provided:
+        driver = ForceFieldProtonDrive(temperature, topology, system, forcefield, ['amber10-constph.xml', custom_xml], pressure=pressure,
+                                           perturbations_per_trial=ncmc_steps_per_trial, propagations_per_step=prop_steps_per_trial)
+    else:
+        driver = ForceFieldProtonDrive(temperature, topology, system, forcefield, ['amber10-constph.xml'], pressure=pressure,
                                            perturbations_per_trial=ncmc_steps_per_trial, propagations_per_step=prop_steps_per_trial)
 
     pH = float(prms["pH"])
@@ -234,7 +250,9 @@ def main(jsonfile):
     salinator.neutralize()
     salinator.initialize_concentration()
     swapper = salinator.swapper
-    simulation.drive.attach_swapper(swapper)
+    # if chen-roux required, attach swapper. Else, use neutralizing background charge
+    if counterion_method in ["chenroux", "chen-roux"]:
+        simulation.drive.attach_swapper(swapper)
 
     simulation.minimizeEnergy(tolerance=pre_run_minimization_tolerance, maxIterations=minimization_max_iterations)
     simulation.step(num_thermalization_steps)
