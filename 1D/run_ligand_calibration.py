@@ -104,7 +104,7 @@ def main(jsonfile):
     if "ffxml" in inp:
         custom_xml_provided = True
 
-    if custom_xml_provided
+    if custom_xml_provided:
         custom_xml = os.path.join(idir, inp["ffxml"].format(**prms))
         custom_xml = os.path.abspath(custom_xml)
         forcefield = app.ForceField('amber10-constph.xml', 'gaff.xml', custom_xml, 'tip3p.xml', 'ions_tip3p.xml')
