@@ -7,13 +7,13 @@
   },
 
   "output": {
-    "dir" : "{basename}-calibration",
-    "netcdf" : "{basename}.nc",
-    "dcd" : "{basename}.nc",
+    "dir" : "{basename}-{methodname}-calibration",
+    "netcdf" : "{basename}-{methodname}.nc",
+    "dcd" : "{basename}-{methodname}.nc",
     "resume_files" : {
-    "state" : "{basename}-state.xml",
-    "drive" : "{basename}-drive.xml",
-    "calibration"  : "{basename}-calibration.json"
+    "state" : "{basename}-{methodname}-state.xml",
+    "drive" : "{basename}-{methodname}-drive.xml",
+    "calibration"  : "{basename}-{methodname}-calibration.json"
     }
   },
 
@@ -25,6 +25,7 @@
     "total_attempts" : 5000,
     "num_thermalization_steps" : 10000,
     "steps_between_updates" : 10000,
+    "methodname" : "chenroux",
 
     "system" : {
       "ewald_error_tolerance" : 1.0e-5,
