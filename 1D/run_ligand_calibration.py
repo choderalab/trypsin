@@ -228,9 +228,7 @@ def main(jsonfile):
     else:
         driver = ForceFieldProtonDrive(temperature, topology, system, forcefield, ['amber10-constph.xml'], pressure=pressure,
                                            perturbations_per_trial=ncmc_steps_per_trial, propagations_per_step=prop_steps_per_trial)
-
-    pH = float(prms["pH"])
-    driver.adjust_to_ph(pH)
+    
     # Assumes ligand is always the last titration group
     ligand_titration_group_index = len(driver.titrationGroups) - 1
 
