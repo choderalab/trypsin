@@ -21,5 +21,5 @@ export PATH="/home/rustenburg/miniconda3/bin:$PATH"
 source activate trypsin
 
 # Launch my program.
-module load cuda
+module load cuda/9.0
 python {1} {2}
