@@ -53,9 +53,10 @@ for system in amino_acids + ligs:
         os.chdir(outdirname)
         with open("settings.json", "w") as outfile:
             json.dump(jsontemplate, outfile, indent=4, sort_keys=True)
+        setting_path = "{}/settings.json".format(outdirname)
         # Take a copy of the run submit template, and fill it in.
         with open("submit.sh", "w") as submitfile:
-            submitfile.write(submit_str.format(jobname, runscript_path, "settings.json"))
+            submitfile.write(submit_str.format(jobname, runscript_path, setting_path))
         os.chdir("..")
         # add a line to the master submit script
         master_str += "bsub < {}/submit.sh\n".format(outdirname)
