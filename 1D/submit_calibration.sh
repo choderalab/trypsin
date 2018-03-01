@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -J Imatinib-solvent-1-GBAOAB
+#BSUB -J {0}
 #BSUB -n 1
 #BSUB -R rusage[mem=8]
 #BSUB -q gpuqueue
@@ -22,7 +22,4 @@ source activate trypsin
 
 # Launch my program.
 module load cuda
-python run_calibration.py 1D-calibration.json
-
-# Submit the next job into the queue
-# bsub < submit_simulation-2.sh
+python {1} {2}

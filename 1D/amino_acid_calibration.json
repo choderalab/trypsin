@@ -1,0 +1,60 @@
+{
+  "input" : {
+   "_comment" : "Simulation requires an mmCIF file and a ffxml residue. Please specify the input directory under dir.",
+    "dir": "amino-acids",
+    "calibration_system": "{basename}-solvated.cif"
+  },
+
+  "output": {
+    "dir" : "{basename}-{methodname}-calibration",
+    "netcdf" : "{basename}-{methodname}.nc",
+    "dcd" : "{basename}-{methodname}.nc",
+    "resume_files" : {
+    "state" : "{basename}-{methodname}-state.xml",
+    "drive" : "{basename}-{methodname}-drive.xml",
+    "calibration"  : "{basename}-{methodname}-sams.json"
+    }
+  },
+
+  "parameters" : {
+
+    "basename" : "asp",
+    "pH" : 7.8,
+    "total_attempts" : 10000,
+    "num_thermalization_steps" : 10000,
+    "steps_between_updates" : 10000,
+    "methodname": "background",
+
+    "system" : {
+      "ewald_error_tolerance" : 1.0e-5,
+      "barostat_interval": 25,
+      "switching_distance_nm": 0.85,
+      "nonbonded_cutoff_nm": 1.0,
+      "pressure_atm" : 1.0,
+      "temperature_k": 300.0
+    },
+
+    "integrator" : {
+      "timestep_fs" : 2.0,
+      "constraint_tolerance" : 1e-7,
+      "collision_rate_per_ps": 1.0
+    },
+    "ncmc" : {
+      "_comment": "Pick counterion_method from chen-roux, or background",
+      "steps_per_trial" : 10000,
+      "propagations_per_step": 1,
+      "counterion_method": "background"
+    },
+    "minimization" : {
+      "tolerance_kjmol":   1e-5,
+      "max_iterations" : 0
+    },
+    "SAMS" : {
+      "beta_sams" : 0.5,
+      "flatness_criterion" : 0.15
+    }
+
+  }
+
+
+}

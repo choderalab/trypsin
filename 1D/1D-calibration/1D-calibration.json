@@ -1,9 +1,0 @@
-{
-    "beta_sams": 0.5,
-    "current_adaptation": 83,
-    "end_of_burnin": 0,
-    "flatness_criterion": 0.15,
-    "min_burn": 0,
-    "scheme": "binary",
-    "stage": "burn-in"
-}
