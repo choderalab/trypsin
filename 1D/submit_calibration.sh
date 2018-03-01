@@ -2,8 +2,10 @@
 #BSUB -J {0}
 #BSUB -n 1
 #BSUB -R rusage[mem=8]
+#BSUB -R span[hosts=1]
 #BSUB -q gpuqueue
 #BSUB -R select[gpu_model0=='GeForceGTX1080Ti']
+#BSUB -gpu num=1:mode=exclusive_process:mps=no:
 #BSUB -W  120:00
 #BSUB -We 119:30
 #BSUB -o %J.stdout
