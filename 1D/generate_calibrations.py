@@ -42,7 +42,7 @@ for system in amino_acids + ligs:
 
         # Take a copy of the template json and fill it in
         if system in ligs:
-            tempatename = ligand_template
+            templatename = ligand_template
         else:
             templatename = amino_acid_template
         jsontemplate = json.load(open(templatename))
